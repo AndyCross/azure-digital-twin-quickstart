@@ -2,6 +2,11 @@
 
 This is a set of really basic ADT work that I put together to run through the basics as part of interactive demoing of the capability of ADT.
 
+## Links that were mentioned in the talk
+
+[DTDL specification](https://github.com/Azure/opendigitaltwins-dtdl/blob/master/DTDL/v2/dtdlv2.md)
+[RealEstateCore Ontology](https://doc.realestatecore.io/3.3/full.html)
+
 ## Setup
 
 This requires azure cli and functions cli, and a local python install. 
