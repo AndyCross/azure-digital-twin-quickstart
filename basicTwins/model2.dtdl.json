@@ -1,0 +1,23 @@
+{
+    "@id": "dtmi:elastacloud:DigitalTwins:MainsCircuit;1",
+    "@type": "Interface",
+    "@context": "dtmi:dtdl:context;2",
+    "contents": [
+      {
+        "@type": "Property",
+        "name": "installedBy",
+        "schema": "string"
+      },
+      {
+        "@type": "Property",
+        "name": "timestamp",
+        "schema": "string",
+        "writable": true
+      },
+      {
+        "@type": "Relationship",
+        "name": "connectedTo",
+        "target": "dtmi:elastacloud:DigitalTwins:PowerMeter;1"
+      }
+    ]
+  }

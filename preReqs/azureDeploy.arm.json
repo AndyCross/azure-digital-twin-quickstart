@@ -1,0 +1,703 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "IotHubs_iotnorth_hub_connectionString": {
+            "type": "SecureString"
+        },
+        "IotHubs_iotnorth_hub_containerName": {
+            "type": "SecureString"
+        },
+        "sites_iotnorth_funcs_name": {
+            "defaultValue": "iotnorth-funcs",
+            "type": "String"
+        },
+        "IotHubs_iotnorth_hub_name": {
+            "defaultValue": "iotnorth-hub",
+            "type": "String"
+        },
+        "domains_iotnorth_grid_name": {
+            "defaultValue": "iotnorth-grid",
+            "type": "String"
+        },
+        "serverfarms_ASP_iotnorth_936b_name": {
+            "defaultValue": "ASP-iotnorth-936b",
+            "type": "String"
+        },
+        "components_iotnorth_funcs_name": {
+            "defaultValue": "iotnorth-funcs",
+            "type": "String"
+        },
+        "topics_iotnorth_grid_topic_name": {
+            "defaultValue": "iotnorth-grid-topic",
+            "type": "String"
+        },
+        "provisioningServices_iotnorth_dps_name": {
+            "defaultValue": "iotnorth-dps",
+            "type": "String"
+        },
+        "IoTSecuritySolutions_iotnorth_hub_name": {
+            "defaultValue": "iotnorth-hub",
+            "type": "String"
+        },
+        "storageAccounts_storageaccountiotno93fa_name": {
+            "defaultValue": "storageaccountiotno93fa",
+            "type": "String"
+        },
+        "digitalTwinsInstances_iotnorth_twin_name": {
+            "defaultValue": "iotnorth-twin",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___iotnorth_funcs_name": {
+            "defaultValue": "failure anomalies - iotnorth-funcs",
+            "type": "String"
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "defaultValue": "/subscriptions/a280525c-d520-48ab-a1c9-6463fb958790/resourceGroups/getkey/providers/microsoft.insights/actiongroups/application insights smart detection",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Devices/IotHubs",
+            "apiVersion": "2020-08-01",
+            "name": "[parameters('IotHubs_iotnorth_hub_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "ipFilterRules": [],
+                "eventHubEndpoints": {
+                    "events": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 4
+                    }
+                },
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": [],
+                        "storageContainers": []
+                    },
+                    "routes": [],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "storageEndpoints": {
+                    "$default": {
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "[parameters('IotHubs_iotnorth_hub_connectionString')]",
+                        "containerName": "[parameters('IotHubs_iotnorth_hub_containerName')]"
+                    }
+                },
+                "messagingEndpoints": {
+                    "fileNotifications": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "features": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Devices/provisioningServices",
+            "apiVersion": "2020-03-01",
+            "name": "[parameters('provisioningServices_iotnorth_dps_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "properties": {
+                "state": "Active",
+                "provisioningState": "Succeeded",
+                "iotHubs": [],
+                "allocationPolicy": "Hashed"
+            }
+        },
+        {
+            "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
+            "apiVersion": "2020-12-01",
+            "name": "[parameters('digitalTwinsInstances_iotnorth_twin_name')]",
+            "location": "uksouth",
+            "properties": {
+                "privateEndpointConnections": [],
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.EventGrid/domains",
+            "apiVersion": "2020-06-01",
+            "name": "[parameters('domains_iotnorth_grid_name')]",
+            "location": "uksouth",
+            "properties": {
+                "inputSchema": "EventGridSchema",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.EventGrid/topics",
+            "apiVersion": "2020-06-01",
+            "name": "[parameters('topics_iotnorth_grid_topic_name')]",
+            "location": "uksouth",
+            "properties": {
+                "inputSchema": "EventGridSchema",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[parameters('components_iotnorth_funcs_name')]",
+            "location": "uksouth",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[parameters('storageAccounts_storageaccountiotno93fa_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('serverfarms_ASP_iotnorth_936b_name')]",
+            "location": "UK South",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+            },
+            "kind": "functionapp",
+            "properties": {
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2019-06-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___iotnorth_funcs_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector",
+                    "name": "Failure Anomalies",
+                    "description": "Detects if your application experiences an abnormal rise in the rate of HTTP requests or dependency calls that are reported as failed. The anomaly detection uses machine learning algorithms and occurs in near real time, therefore there's no need to define a frequency for this signal.<br/></br/>To help you triage and diagnose the problem, an analysis of the characteristics of the failures and related telemetry is provided with the detection. This feature works for any app, hosted in the cloud or on your own servers, that generates request or dependency telemetry - for example, if you have a worker role that calls <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackrequest\\\" target=\\\"_blank\\\">TrackRequest()</a> or <a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/application-insights/app-insights-api-custom-events-metrics#trackdependency\\\" target=\\\"_blank\\\">TrackDependency()</a>.<br/><br/><a class=\"ext-smartDetecor-link\" href=\\\"https://docs.microsoft.com/azure/azure-monitor/app/proactive-failure-diagnostics\\\" target=\\\"_blank\\\">Learn more about Failure Anomalies</a>",
+                    "supportedResourceTypes": [
+                        "ApplicationInsights"
+                    ]
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_iotnorth_funcs_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actiongroups_application_insights_smart_detection_externalid')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DigitalTwins/digitalTwinsInstances/endpoints",
+            "apiVersion": "2020-12-01",
+            "name": "[concat(parameters('digitalTwinsInstances_iotnorth_twin_name'), '/iotnorth-grid-topic')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('digitalTwinsInstances_iotnorth_twin_name'))]"
+            ],
+            "properties": {
+                "authenticationType": "KeyBased",
+                "endpointType": "EventGrid",
+                "TopicEndpoint": "https://iotnorth-grid-topic.uksouth-1.eventgrid.azure.net/api/events",
+                "accessKey1": "***",
+                "accessKey2": "***"
+            }
+        },
+        {
+            "type": "Microsoft.Security/IoTSecuritySolutions",
+            "apiVersion": "2019-08-01",
+            "name": "[parameters('IoTSecuritySolutions_iotnorth_hub_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iotnorth_hub_name'))]"
+            ],
+            "properties": {
+                "displayName": "[parameters('IoTSecuritySolutions_iotnorth_hub_name')]",
+                "status": "Enabled",
+                "export": [],
+                "disabledDataSources": [],
+                "iotHubs": [
+                    "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iotnorth_hub_name'))]"
+                ],
+                "userDefinedResources": {
+                    "query": "where type != \"microsoft.devices/iothubs\" | where (subscriptionId == \"a280525c-d520-48ab-a1c9-6463fb958790\" and resourceGroup in~ (\"iotnorth\")) | project id, name, type",
+                    "querySubscriptions": [
+                        "a280525c-d520-48ab-a1c9-6463fb958790"
+                    ]
+                },
+                "recommendationsConfiguration": [
+                    {
+                        "recommendationType": "IoT_ACRAuthentication",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_AgentSendsUnutilizedMessages",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_AuditdNotReceived",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_Baseline",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_EdgeHubMemOptimize",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_EdgeLoggingOptions",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_InconsistentModuleSettings",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_InstallAgent",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_IPFilter_DenyAll",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_IPFilter_PermissiveRule",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_OpenPorts",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_PermissiveFirewallPolicy",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_PermissiveInputFirewallRules",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_PermissiveOutputFirewallRules",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_PrivilegedDockerOptions",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_RecommendedIpRulesByBaseLine",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_SharedCredentials",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_VulnerableTLSCipherSuite",
+                        "status": "Enabled"
+                    },
+                    {
+                        "recommendationType": "IoT_EOL_OSversion",
+                        "status": "Enabled"
+                    }
+                ],
+                "unmaskedIpLoggingStatus": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('sites_iotnorth_funcs_name')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_iotnorth_936b_name'))]"
+            ],
+            "kind": "functionapp",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_iotnorth_funcs_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_iotnorth_funcs_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_iotnorth_936b_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {},
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_iotnorth_funcs_name'), '/web')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$iotnorth-funcs",
+                "azureStorageAccounts": {},
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "cors": {
+                    "allowedOrigins": [
+                        "https://functions.azure.com",
+                        "https://functions-staging.azure.com",
+                        "https://functions-next.azure.com"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_iotnorth_funcs_name'), '/91f56fb852e041abbd4295a89d2e15e0')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2021-02-02T17:16:32.4288748Z",
+                "end_time": "2021-02-02T17:16:37.8575256Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_iotnorth_funcs_name'), '/IoTHubTwinBridge')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubTwinBridge/",
+                "script_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/bin/funcs.dll",
+                "config_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubTwinBridge/function.json",
+                "href": "https://iotnorth-funcs.azurewebsites.net/admin/functions/IoTHubTwinBridge",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_iotnorth_funcs_name'), '/TwinToUpstreamService')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/TwinToUpstreamService/",
+                "script_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/bin/funcs.dll",
+                "config_href": "https://iotnorth-funcs.azurewebsites.net/admin/vfs/site/wwwroot/TwinToUpstreamService/function.json",
+                "href": "https://iotnorth-funcs.azurewebsites.net/admin/functions/TwinToUpstreamService",
+                "config": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_iotnorth_funcs_name'), '/', parameters('sites_iotnorth_funcs_name'), '.azurewebsites.net')]",
+            "location": "UK South",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_iotnorth_funcs_name'))]"
+            ],
+            "properties": {
+                "siteName": "iotnorth-funcs",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default/azure-webjobs-eventhub')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_storageaccountiotno93fa_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default/azure-webjobs-hosts')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_storageaccountiotno93fa_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default/azure-webjobs-secrets')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_storageaccountiotno93fa_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+            "apiVersion": "2020-08-01-preview",
+            "name": "[concat(parameters('storageAccounts_storageaccountiotno93fa_name'), '/default/iotnorth-funcs9523')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_storageaccountiotno93fa_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_storageaccountiotno93fa_name'))]"
+            ],
+            "properties": {
+                "accessTier": "TransactionOptimized",
+                "shareQuota": 5120,
+                "enabledProtocols": "SMB"
+            }
+        }
+    ]
+}

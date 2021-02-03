@@ -1,0 +1,19 @@
+{
+    "@id": "dtmi:elastacloud:DigitalTwins:PowerMeter;1",
+    "@type": "Interface",
+    "@context": "dtmi:dtdl:context;2",
+    "contents": [
+      {
+        "@type": ["Power", "Property"],
+        "name": "importPower",
+        "unit": "watt",
+        "schema": "double"
+      },
+      {
+        "@type": "Property",
+        "name": "timestamp",
+        "schema": "string",
+        "writable": true
+      }
+    ]
+  }
