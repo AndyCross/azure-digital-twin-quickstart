@@ -4,8 +4,8 @@ This is a set of really basic ADT work that I put together to run through the ba
 
 ## Links that were mentioned in the talk
 
-[DTDL specification](https://github.com/Azure/opendigitaltwins-dtdl/blob/master/DTDL/v2/dtdlv2.md)
-[RealEstateCore Ontology](https://doc.realestatecore.io/3.3/full.html)
+* [DTDL specification](https://github.com/Azure/opendigitaltwins-dtdl/blob/master/DTDL/v2/dtdlv2.md)
+* [RealEstateCore Ontology](https://doc.realestatecore.io/3.3/full.html)
 
 ## Setup
 
